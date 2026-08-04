@@ -32,3 +32,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\validate_workflow.ps1
 The check verifies the expected nodes and connections, confirms that LLM credentials are referenced through environment variables, and confirms that email is draft-only.
 
 This repository is a portfolio proof, not a claim of production deployment or client revenue. It intentionally contains no credentials, client data, or personal information.
+
+## Request a scoped review
+
+If you have a similar workflow problem, open a [workflow review request](https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml). Describe the outcome, trigger, destination, and approximate budget. Do not post credentials, private customer data, API keys, or anything that should not be public.

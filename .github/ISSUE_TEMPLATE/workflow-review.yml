@@ -1,0 +1,42 @@
+name: Request a workflow review
+description: Describe a small automation problem so the scope can be assessed.
+title: "[Workflow review] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please share only non-sensitive information. Do not include passwords, API keys, private customer data, or confidential business documents.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: What should happen automatically, and what should still require human approval?
+      placeholder: "When a lead submits a form, classify it and prepare a reply draft for review."
+    validations:
+      required: true
+  - type: input
+    id: trigger
+    attributes:
+      label: Trigger
+      description: What starts the workflow?
+      placeholder: "Google Form, webhook, email, spreadsheet row, or scheduled job"
+    validations:
+      required: true
+  - type: input
+    id: destination
+    attributes:
+      label: Destination
+      description: Where should the result go?
+      placeholder: "Google Sheets, CRM, Slack, email draft, or another system"
+    validations:
+      required: true
+  - type: textarea
+    id: systems
+    attributes:
+      label: Systems and constraints
+      description: List the tools, approximate volume, and any platform limits without sharing secrets.
+  - type: input
+    id: budget
+    attributes:
+      label: Approximate budget
+      placeholder: "$50 to $200 for a first scoped task"
