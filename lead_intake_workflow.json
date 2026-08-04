@@ -1,0 +1,126 @@
+{
+  "name": "Lead intake: form -> AI qualification -> CRM -> follow-up draft",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000001",
+      "name": "Lead form webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.LLM_BASE_URL }}/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.LLM_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({model: $env.LLM_MODEL, max_tokens: 500, messages: [{role: 'user', content: 'You qualify inbound sales leads. Score this lead 1-10 for fit and urgency and reply ONLY with JSON {\"score\": n, \"reason\": \"...\", \"suggested_reply\": \"...\"}. Lead: ' + JSON.stringify($json.body)}]}) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000002",
+      "name": "Qualify lead (LLM)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.content?.[0]?.text ?? '{}';\nconst match = raw.match(/\\{[\\s\\S]*\\}/);\nlet q = { score: 0, reason: 'parse failure', suggested_reply: '' };\ntry { if (match) q = JSON.parse(match[0]); } catch (e) {}\nconst lead = $('Lead form webhook').first().json.body;\nreturn [{ json: { ...lead, ...q, received_at: new Date().toISOString() } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000003",
+      "name": "Parse qualification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 7,
+              "operator": { "type": "number", "operation": "gte" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000004",
+      "name": "Hot lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_SHEET_ID" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Hot leads" },
+        "columns": { "mappingMode": "autoMapInputData" },
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000005",
+      "name": "CRM: hot leads",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [880, -100]
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=Re: your inquiry, {{ $json.name }}",
+        "message": "={{ $json.suggested_reply }}",
+        "options": { "sendTo": "={{ $json.email }}" }
+      },
+      "id": "a1000000-0000-0000-0000-000000000006",
+      "name": "Draft follow-up email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1100, -100]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_SHEET_ID" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Nurture" },
+        "columns": { "mappingMode": "autoMapInputData" },
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000007",
+      "name": "CRM: nurture list",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [880, 100]
+    }
+  ],
+  "connections": {
+    "Lead form webhook": { "main": [[{ "node": "Qualify lead (LLM)", "type": "main", "index": 0 }]] },
+    "Qualify lead (LLM)": { "main": [[{ "node": "Parse qualification", "type": "main", "index": 0 }]] },
+    "Parse qualification": { "main": [[{ "node": "Hot lead?", "type": "main", "index": 0 }]] },
+    "Hot lead?": {
+      "main": [
+        [{ "node": "CRM: hot leads", "type": "main", "index": 0 }],
+        [{ "node": "CRM: nurture list", "type": "main", "index": 0 }]
+      ]
+    },
+    "CRM: hot leads": { "main": [[{ "node": "Draft follow-up email", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}
