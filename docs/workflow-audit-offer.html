@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A fixed-scope workflow reliability audit for n8n and AI automations.">
+  <title>Workflow reliability audit | n8n and AI automation</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101413;
+      --panel: #171d1b;
+      --panel-2: #1d2623;
+      --line: #31403a;
+      --text: #eef4ef;
+      --muted: #aab9af;
+      --green: #9fe870;
+      --green-ink: #12210f;
+      --amber: #f4c979;
+      --red: #f29b8f;
+      --radius: 18px;
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      padding: 0 24px 48px;
+      background: linear-gradient(90deg, rgba(159, 232, 112, .06) 1px, transparent 1px) 0 0 / 56px 56px, var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .shell { max-width: var(--max); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 0 76px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; letter-spacing: -.02em; }
+    .mark { width: 12px; height: 12px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(159, 232, 112, .12); }
+    .nav { display: flex; gap: 18px; color: var(--muted); font-size: .9rem; }
+    .nav a:hover, .nav a:focus-visible { color: var(--text); }
+    .hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); gap: 70px; align-items: end; }
+    .eyebrow { margin: 0 0 16px; color: var(--green); font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 670px; margin: 0; font-size: clamp(2.7rem, 7vw, 5.4rem); line-height: .96; letter-spacing: -.075em; }
+    .lede { max-width: 600px; margin: 26px 0 0; color: var(--muted); font-size: 1.08rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .cta-note { max-width: 600px; margin: 13px 0 0; color: var(--muted); font-size: .82rem; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 18px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; font-weight: 750; }
+    .button.primary { background: var(--green); border-color: var(--green); color: var(--green-ink); }
+    .button.secondary { color: var(--text); }
+    .button:hover, .button:focus-visible { transform: translateY(-1px); }
+    :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+    .sample { padding: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 18px 70px rgba(0,0,0,.22); }
+    .sample-head { display: flex; justify-content: space-between; gap: 18px; margin-bottom: 20px; color: var(--muted); font-size: .82rem; }
+    .status { display: inline-flex; align-items: center; gap: 7px; color: var(--green); font-weight: 750; }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .message { padding: 17px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; }
+    .message + .message { margin-top: 10px; }
+    .message-label { margin: 0 0 6px; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; }
+    .message p { margin: 0; }
+    .message strong { color: var(--green); }
+    .sample-foot { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .chip { padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .76rem; }
+    .section { padding-top: 112px; }
+    .section-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: 72px; }
+    h2 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.02; letter-spacing: -.055em; }
+    .section-copy { color: var(--muted); }
+    .section-copy p:first-child { margin-top: 0; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .step { min-height: 170px; padding: 16px; border-top: 2px solid var(--green); background: rgba(23, 29, 27, .78); }
+    .step-number { color: var(--green); font-size: .8rem; font-weight: 800; }
+    .step h3 { margin: 28px 0 6px; font-size: 1rem; }
+    .step p { margin: 0; color: var(--muted); font-size: .88rem; }
+    .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+    .proof a { display: block; padding: 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); text-decoration: none; background: rgba(23, 29, 27, .7); }
+    .proof a:hover, .proof a:focus-visible { border-color: var(--green); }
+    .proof strong { display: block; margin-bottom: 5px; color: var(--green); }
+    .proof span { color: var(--muted); font-size: .86rem; }
+    .limits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+    .limit { padding: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+    .limit h3 { margin: 0 0 7px; font-size: 1rem; }
+    .limit p { margin: 0; color: var(--muted); font-size: .9rem; }
+    details { margin-top: 22px; border-top: 1px solid var(--line); }
+    summary { padding: 16px 0; cursor: pointer; color: var(--text); font-weight: 700; }
+    details p { max-width: 720px; color: var(--muted); }
+    footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 116px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
+    footer a { color: var(--text); }
+    .mobile-cta { display: none; }
+    @media (max-width: 820px) {
+      body { padding: 0 16px 104px; }
+      .topbar { padding-bottom: 52px; }
+      .nav { gap: 12px; }
+      .hero, .section-grid { grid-template-columns: 1fr; gap: 34px; }
+      .sample { order: -1; }
+      .steps, .proof, .limits { grid-template-columns: 1fr; }
+      .section { padding-top: 78px; }
+      footer { flex-direction: column; margin-top: 80px; }
+      .mobile-cta { position: fixed; z-index: 2; right: 12px; bottom: 12px; left: 12px; display: flex; justify-content: center; padding: 10px; background: rgba(16, 20, 19, .92); border: 1px solid var(--line); border-radius: 16px; backdrop-filter: blur(12px); }
+      .mobile-cta .button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; transform: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>lead intake / n8n proof</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="https://github.com/cig13zs/lead-intake-automation">Code</a>
+        <a href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Review request</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">paid, fixed-scope first milestone</p>
+          <h1 id="page-title">Find the failure point before it becomes an incident.</h1>
+          <p class="lede">A short reliability audit for n8n and AI workflows that receive data, call a model, route a decision, and trigger a human-visible action.</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Open the public review form</a>
+            <a class="button secondary" href="https://cig13zs.github.io/lead-intake-automation/workflow-reliability-audit.html">See the audit proof</a>
+          </div>
+          <p class="cta-note">GitHub sign-in required. Submissions are public. Share only a redacted workflow outline; never post credentials or customer data.</p>
+          <p class="cta-note">First milestone: one workflow, a findings sheet, prioritized fixes, and acceptance checks. Turnaround and fee are agreed before access.</p>
+        </div>
+
+        <article class="sample" aria-label="Example audit result">
+          <div class="sample-head"><span>illustrative finding / public demo</span><span class="status">example review</span></div>
+          <div class="message">
+            <p class="message-label">Observed path</p>
+            <p>Webhook -> model output -> score branch -> sheet write -> email draft</p>
+          </div>
+          <div class="message">
+            <p class="message-label">Failure case</p>
+            <p><strong>Malformed model output</strong> reaches a branch without a valid score.</p>
+          </div>
+          <div class="message">
+            <p class="message-label">Recommended boundary</p>
+            <p>Route to review, preserve the original input, and stop before any customer-facing send.</p>
+          </div>
+          <p class="cta-note"><a href="https://github.com/cig13zs/lead-intake-automation/blob/master/validate_workflow.ps1">View the exact validation check</a>. Portfolio example, not a client deployment or audit result.</p>
+          <div class="sample-foot"><span class="chip">synthetic test data</span><span class="chip">redacted access</span><span class="chip">human approval</span></div>
+        </article>
+      </section>
+
+      <section class="section section-grid" aria-labelledby="deliverable-title">
+        <div>
+          <p class="eyebrow">what you receive</p>
+          <h2 id="deliverable-title">A small review with a usable handoff.</h2>
+        </div>
+        <div class="section-copy">
+          <p>The first milestone stays narrow. It maps one workflow from trigger to side effect, tests representative failure cases, and returns a prioritized repair list with acceptance checks.</p>
+          <div class="steps">
+            <div class="step"><span class="step-number">01</span><h3>Map</h3><p>Trace one trigger, decision path, credential boundary, and final side effect.</p></div>
+            <div class="step"><span class="step-number">02</span><h3>Test</h3><p>Run synthetic or redacted fixtures for malformed input, duplicate risk, and unsafe output.</p></div>
+            <div class="step"><span class="step-number">03</span><h3>Hand off</h3><p>Return findings, fixes to prioritize, and a short acceptance checklist.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-grid" aria-labelledby="fit-title">
+        <div>
+          <p class="eyebrow">good first fit</p>
+          <h2 id="fit-title">Bring one workflow that matters.</h2>
+        </div>
+        <div class="section-copy">
+          <div class="limits">
+            <article class="limit"><h3>Useful starting points</h3><p>Lead intake, inbox triage, structured extraction, CRM or Sheet handoff, approval queues, and workflows that fail silently.</p></article>
+            <article class="limit"><h3>Safe boundary</h3><p>Use synthetic or redacted data first. Do not share passwords, API keys, recovery codes, or unrestricted production access for the audit.</p></article>
+          </div>
+          <details>
+            <summary>What this offer does not promise</summary>
+            <p>This page describes a paid portfolio offer, not a claim of client deployments or guaranteed revenue. A live build, platform connection, or ongoing maintenance plan needs its own written scope and client-owned access.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="section section-grid" aria-labelledby="proof-title">
+        <div>
+          <p class="eyebrow">public proof</p>
+          <h2 id="proof-title">Inspect the example first.</h2>
+        </div>
+        <div class="section-copy">
+          <p>The public example is a small n8n lead-intake workflow with structured qualification, validation, routing, Sheets logging, and Gmail draft-only follow-up.</p>
+          <div class="proof">
+            <a href="https://github.com/cig13zs/lead-intake-automation"><strong>Repository</strong><span>Workflow JSON and validation check.</span></a>
+            <a href="https://cig13zs.github.io/lead-intake-automation/"><strong>Live workflow</strong><span>Readable walkthrough with sample output.</span></a>
+            <a href="https://cig13zs.github.io/lead-intake-automation/workflow-reliability-audit.html"><strong>Reliability audit</strong><span>Pass, review, and fail fixtures.</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Independent portfolio offer. No credentials or client data.</span>
+      <span><a href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Open the public review form</a></span>
+    </footer>
+  </div>
+  <div class="mobile-cta"><a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Open the public review form</a></div>
+</body>
+</html>
