@@ -1,0 +1,4 @@
+{"ts": "2026-07-13T04:23:58", "provider": "cheap-a", "tier": "cheap", "latency_s": 0.0, "in_tokens": 1, "out_tokens": 1}
+{"ts": "2026-07-13T04:23:58", "provider": "cheap-b", "tier": "cheap", "latency_s": 0.0, "in_tokens": 1, "out_tokens": 1}
+{"ts": "2026-07-13T04:23:58", "provider": "std-a", "tier": "standard", "latency_s": 0.0, "in_tokens": 1, "out_tokens": 1}
+{"ts": "2026-07-13T04:23:58", "provider": "std-a", "tier": "standard", "latency_s": 0.0, "in_tokens": 1, "out_tokens": 1}

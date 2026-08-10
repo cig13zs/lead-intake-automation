@@ -1,0 +1,21 @@
+﻿node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.log
+Thumbs.db
+.DS_Store
+dist/
+build/
+.ruff_cache/
+.easyeda-mcp-pro/
+
+# Credentials never belong in a repo. Keys live in ~/.claude/secrets.ps1
+.env
+.env.*
+secrets*.ps1
+*.key
+*.pem
+*-oauth.json
+*credentials*
