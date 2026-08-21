@@ -9,6 +9,8 @@ manually reads the form, decides if it's worth chasing, copies it into a CRM, an
 writes a reply. Speed-to-lead is the single biggest driver of conversion, and this
 closes it to seconds.
 
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-buy_me_a_coffee-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/jju1s)
+
 ## Flow
 
 ```
