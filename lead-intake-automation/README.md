@@ -35,8 +35,6 @@ Web form (webhook)  ->  Qualify with LLM  ->  Route on score  ->  CRM + follow-u
 
 ## Notes
 
-- Provider-agnostic: the LLM call uses the standard `/v1/messages` shape, so it
-  runs on Anthropic, DeepSeek, Qwen, GLM, or Kimi by changing three env vars.
-- The qualification prompt is pinned to JSON-only output so downstream nodes never
-  have to parse prose.
+- Provider-agnostic: the LLM call uses the standard `/v1/chat/completions` or `/v1/messages` shape, so it runs on any standard LLM provider by configuring environment variables.
+- The qualification prompt is pinned to JSON-only output so downstream nodes never have to parse prose.
 - Keys are referenced via `$env`, never hardcoded in the workflow.
