@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A synthetic n8n workflow reliability audit showing validation, failure routing, and human approval gates.">
-  <title>Workflow reliability audit | Lead intake automation</title>
+  <meta name="description" content="Three synthetic failure scenarios for an n8n lead-intake workflow, with current safeguards and follow-up work shown separately.">
+  <title>Synthetic failure scenarios | Lead intake automation</title>
   <style>
     :root {
       --ink: #e8f0e7;
@@ -123,23 +123,16 @@
   <main class="shell">
     <section class="hero" aria-labelledby="page-title">
       <div>
-        <div class="eyebrow">synthetic audit / n8n workflow</div>
-        <h1 id="page-title">Find the quiet failure before the client does.</h1>
-        <p class="lede">A compact reliability pass for a lead-intake workflow: inspect the payload, prove the branch, isolate the failure, and keep human approval in the loop before anything customer-facing happens.</p>
-        <div class="cta-row"><a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Describe a workflow</a><a class="button secondary" href="index.html">See the live proof</a></div>
+        <div class="eyebrow">synthetic scenarios / n8n workflow</div>
+        <h1 id="page-title">Three ways a lead workflow can fail quietly.</h1>
+        <p class="lede">These hypothetical records show the happy path, a missing contact field, and malformed model output. They document expected behavior; they are not executed audit results.</p>
+        <div class="cta-row"><a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Describe a workflow</a><a class="button secondary" href="index.html">See the workflow example</a></div>
       </div>
-      <aside class="hero-note"><strong>What this page proves</strong><p>Not a claimed production incident report. This is a redacted, synthetic walkthrough of the checks I use before a workflow is trusted with live credentials or client-facing actions.</p></aside>
-    </section>
-
-    <section class="stats" aria-label="Audit summary">
-      <div class="stat"><b>3</b><span>fixtures inspected</span></div>
-      <div class="stat"><b>2</b><span>silent failures caught</span></div>
-      <div class="stat"><b>0</b><span>automatic sends</span></div>
-      <div class="stat"><b>1</b><span>human approval gate</span></div>
+      <aside class="hero-note"><strong>What this page is</strong><p>A design walkthrough using invented data. The repository's PowerShell check validates workflow structure only; it does not execute these records or contact external services.</p></aside>
     </section>
 
     <section class="section" aria-labelledby="flow-title">
-      <div class="section-head"><h2 id="flow-title">The audit path</h2><p>The fastest reliable repair is usually a narrow one: trace one record from the trigger to the handoff, then add only the guardrails the failure calls for.</p></div>
+      <div class="section-head"><h2 id="flow-title">A review path</h2><p>A production review can trace one record from the trigger to the handoff, then add the guardrails the observed failure calls for.</p></div>
       <div class="flow">
         <article class="step"><span class="step-no">01</span><h3>Receive</h3><p>Capture the raw webhook body before any transformation.</p></article>
         <article class="step"><span class="step-no">02</span><h3>Validate</h3><p>Reject missing identifiers and normalize the fields downstream needs.</p></article>
@@ -150,24 +143,24 @@
     </section>
 
     <section class="section" aria-labelledby="fixtures-title">
-      <div class="section-head"><h2 id="fixtures-title">Fixture results</h2><p>Three fake records exercise the happy path, a malformed request, and a model response that cannot be trusted downstream.</p></div>
+      <div class="section-head"><h2 id="fixtures-title">Example scenarios</h2><p>These three invented records describe expected handling. They have not been run against live n8n, model, Sheets, or Gmail accounts.</p></div>
       <div class="audit-panel">
         <div class="audit-toolbar"><p id="result-count">Showing 3 synthetic fixtures</p><div class="filters" aria-label="Filter results"><button class="filter" type="button" data-filter="all" aria-pressed="true">all</button><button class="filter" type="button" data-filter="pass" aria-pressed="false">pass</button><button class="filter" type="button" data-filter="review" aria-pressed="false">review</button><button class="filter" type="button" data-filter="fail" aria-pressed="false">fail</button></div></div>
         <div class="table-wrap"><table><thead><tr><th scope="col">fixture</th><th scope="col">status</th><th scope="col">what happened</th><th scope="col">safe next step</th></tr></thead><tbody>
-          <tr data-status="pass"><td><strong>hot-lead-001</strong><br><span class="note">complete payload</span></td><td><span class="status pass">pass</span></td><td>Required fields were present; structured score parsed; route and log agreed.</td><td>Queue a Gmail draft for review.</td></tr>
-          <tr data-status="review"><td><strong>missing-email-002</strong><br><span class="note">malformed payload</span></td><td><span class="status review">review</span></td><td>Lead name arrived, but the contact field was absent. A silent drop would lose the record.</td><td>Write to an exception queue and request the missing field.</td></tr>
-          <tr data-status="fail"><td><strong>prose-model-003</strong><br><span class="note">untrusted output</span></td><td><span class="status fail">fail</span></td><td>Model returned prose instead of the required JSON shape. Downstream routing is unsafe.</td><td>Stop the send path, keep the raw response, and alert the owner.</td></tr>
+          <tr data-status="pass"><td><strong>hot-lead-001</strong><br><span class="note">complete payload</span></td><td><span class="status pass">expected pass</span></td><td>If the contact fields and structured score validate, the score determines the route.</td><td>Create a Gmail draft for human review only on the hot path.</td></tr>
+          <tr data-status="review"><td><strong>missing-email-002</strong><br><span class="note">malformed payload</span></td><td><span class="status review">expected review</span></td><td>A missing or invalid email sets the score to zero and marks the record for review.</td><td>Inspect the nurture row and request the missing field.</td></tr>
+          <tr data-status="fail"><td><strong>prose-model-003</strong><br><span class="note">untrusted output</span></td><td><span class="status fail">expected fallback</span></td><td>Malformed model output sets the score to zero, clears the draft, and marks the record for review.</td><td>Keep it off the draft path and inspect the recorded failure reason.</td></tr>
         </tbody></table></div>
       </div>
     </section>
 
     <section class="section two-col" aria-label="Audit notes">
-      <article class="card"><h3>Guardrails that matter</h3><p>Environment-only keys, deterministic validation before the model call, structured output with a fallback, explicit error logging, and a human-controlled draft step.</p><details><summary>What is intentionally absent?</summary><p>No live credentials, customer records, production metrics, autonomous payments, bulk outreach, or automatic customer-facing sends.</p></details></article>
+      <article class="card"><h3>Current demo boundaries</h3><p>The demo uses environment-only LLM keys, validates contact fields and parsed output, records a review flag, and creates Gmail drafts instead of sending. Pre-call schema rejection, owner alerts, and dedicated exception logging remain follow-up work for a production scope.</p><details><summary>What is intentionally absent?</summary><p>No live credentials, customer records, production metrics, autonomous payments, bulk outreach, or automatic customer-facing sends.</p></details></article>
       <article class="card"><h3>Bring one messy workflow</h3><p>Share the trigger, desired destination, systems involved, and rough budget. I can start with a redacted map and a narrow paid repair milestone.</p><div class="cta-row"><a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Request a scoped review</a></div></article>
     </section>
   </main>
 
-  <footer><div class="shell">Portfolio proof only · synthetic data · no credentials or personal information</div></footer>
+  <footer><div class="shell">Hypothetical scenarios only · synthetic data · no credentials or personal information</div></footer>
   <div class="mobile-cta"><a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Describe a workflow</a></div>
   <script>
     (function () {

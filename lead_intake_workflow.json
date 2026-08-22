@@ -38,7 +38,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const raw = $json.content?.[0]?.text ?? '{}';\nconst match = raw.match(/\\{[\\s\\S]*\\}/);\nlet q = { score: 0, reason: 'parse failure', suggested_reply: '' };\ntry { if (match) q = JSON.parse(match[0]); } catch (e) {}\nconst lead = $('Lead form webhook').first().json.body;\nreturn [{ json: { ...lead, ...q, received_at: new Date().toISOString() } }];"
+        "jsCode": "const raw = $json.content?.[0]?.text ?? '';\nconst match = raw.match(/\\{[\\s\\S]*\\}/);\nlet parsed = null;\ntry { if (match) parsed = JSON.parse(match[0]); } catch (error) {}\nconst lead = $('Lead form webhook').first().json.body ?? {};\nconst score = Number(parsed?.score);\nconst email = String(lead.email ?? '').trim();\nconst name = String(lead.name ?? '').trim();\nconst leadValid = Boolean(name) && /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);\nconst qualificationValid = leadValid && Number.isFinite(score) && score >= 1 && score <= 10 && typeof parsed?.reason === 'string' && typeof parsed?.suggested_reply === 'string';\nconst failureReason = leadValid ? 'qualification output failed validation' : 'lead name or email failed validation';\nreturn [{ json: { ...lead, name, email, score: qualificationValid ? score : 0, reason: qualificationValid ? parsed.reason : failureReason, suggested_reply: qualificationValid ? parsed.suggested_reply : '', qualification_valid: qualificationValid, needs_review: !qualificationValid, received_at: new Date().toISOString() } }];"
       },
       "id": "a1000000-0000-0000-0000-000000000003",
       "name": "Parse qualification",

@@ -50,6 +50,14 @@ if ($draftNode.Count -ne 1 -or $draftNode[0].parameters.resource -ne 'draft') {
     $issues.Add('email step is not configured as a Gmail draft')
 }
 
+$parseNode = @($workflow.nodes | Where-Object { $_.name -eq 'Parse qualification' })
+if ($parseNode.Count -ne 1 -or $parseNode[0].parameters.jsCode -notmatch 'qualificationValid') {
+    $issues.Add('qualification output validation is missing')
+}
+if ($parseNode.Count -ne 1 -or $parseNode[0].parameters.jsCode -notmatch 'leadValid') {
+    $issues.Add('lead name and email validation is missing')
+}
+
 if ($workflow.settings.executionOrder -ne 'v1') {
     $issues.Add('unexpected n8n execution order')
 }
@@ -63,5 +71,6 @@ if ($issues.Count -gt 0) {
 "PASS: $($actualNodes.Count) expected workflow nodes present"
 "PASS: webhook, qualification, parse, and routing connections present"
 "PASS: LLM credentials are referenced through environment variables"
+"PASS: lead fields and qualification output have an explicit fallback"
 "PASS: follow-up email is draft-only"
 "PASS: no hardcoded credential pattern found"

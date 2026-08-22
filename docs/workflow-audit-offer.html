@@ -103,7 +103,7 @@
 <body>
   <div class="shell">
     <header class="topbar">
-      <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>lead intake / n8n proof</a>
+      <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>lead intake / n8n example</a>
       <nav class="nav" aria-label="Primary navigation">
         <a href="https://github.com/cig13zs/lead-intake-automation">Code</a>
         <a href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Review request</a>
@@ -118,7 +118,7 @@
           <p class="lede">A short reliability audit for n8n and AI workflows that receive data, call a model, route a decision, and trigger a human-visible action.</p>
           <div class="actions">
             <a class="button primary" href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Open the public review form</a>
-            <a class="button secondary" href="https://cig13zs.github.io/lead-intake-automation/workflow-reliability-audit.html">See the audit proof</a>
+            <a class="button secondary" href="https://cig13zs.github.io/lead-intake-automation/workflow-reliability-audit.html">See failure scenarios</a>
           </div>
           <p class="cta-note">GitHub sign-in required. Submissions are public. Share only a redacted workflow outline; never post credentials or customer data.</p>
           <p class="cta-note">First milestone: one workflow, a findings sheet, prioritized fixes, and acceptance checks. Turnaround and fee are agreed before access.</p>
@@ -138,7 +138,7 @@
             <p class="message-label">Recommended boundary</p>
             <p>Route to review, preserve the original input, and stop before any customer-facing send.</p>
           </div>
-          <p class="cta-note"><a href="https://github.com/cig13zs/lead-intake-automation/blob/master/validate_workflow.ps1">View the exact validation check</a>. Portfolio example, not a client deployment or audit result.</p>
+          <p class="cta-note"><a href="https://github.com/cig13zs/lead-intake-automation/blob/master/validate_workflow.ps1">View the structural workflow check</a>. It verifies topology and safety boundaries; it does not execute this synthetic scenario.</p>
           <div class="sample-foot"><span class="chip">synthetic test data</span><span class="chip">redacted access</span><span class="chip">human approval</span></div>
         </article>
       </section>
@@ -169,30 +169,30 @@
             <article class="limit"><h3>Safe boundary</h3><p>Use synthetic or redacted data first. Do not share passwords, API keys, recovery codes, or unrestricted production access for the audit.</p></article>
           </div>
           <details>
-            <summary>What this offer does not promise</summary>
-            <p>This page describes a paid portfolio offer, not a claim of client deployments or guaranteed revenue. A live build, platform connection, or ongoing maintenance plan needs its own written scope and client-owned access.</p>
+            <summary>Limits</summary>
+            <p>No client deployment or revenue result is claimed here. A live build, platform connection, or maintenance plan needs its own written scope and client-owned access.</p>
           </details>
         </div>
       </section>
 
       <section class="section section-grid" aria-labelledby="proof-title">
         <div>
-          <p class="eyebrow">public proof</p>
+          <p class="eyebrow">public example</p>
           <h2 id="proof-title">Inspect the example first.</h2>
         </div>
         <div class="section-copy">
-          <p>The public example is a small n8n lead-intake workflow with structured qualification, validation, routing, Sheets logging, and Gmail draft-only follow-up.</p>
+          <p>The public example is a small n8n lead-intake workflow with structured qualification, parsed-field checks, routing, Sheets logging, and Gmail draft-only follow-up.</p>
           <div class="proof">
             <a href="https://github.com/cig13zs/lead-intake-automation"><strong>Repository</strong><span>Workflow JSON and validation check.</span></a>
             <a href="https://cig13zs.github.io/lead-intake-automation/"><strong>Live workflow</strong><span>Readable walkthrough with sample output.</span></a>
-            <a href="https://cig13zs.github.io/lead-intake-automation/workflow-reliability-audit.html"><strong>Reliability audit</strong><span>Pass, review, and fail fixtures.</span></a>
+            <a href="https://cig13zs.github.io/lead-intake-automation/workflow-reliability-audit.html"><strong>Failure scenarios</strong><span>Three hypothetical records and their expected handling.</span></a>
           </div>
         </div>
       </section>
     </main>
 
     <footer>
-      <span>Independent portfolio offer. No credentials or client data.</span>
+      <span>Independent fixed-scope offer. No credentials or client data.</span>
       <span><a href="https://github.com/cig13zs/lead-intake-automation/issues/new?template=workflow-review.yml">Open the public review form</a></span>
     </footer>
   </div>
